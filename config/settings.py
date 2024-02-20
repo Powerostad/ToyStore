@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     # Apps
     "blog",
     "shop",
-    "basket",
+    "cart",
     "financial",
 ]
 
