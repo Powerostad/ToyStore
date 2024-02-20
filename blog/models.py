@@ -1,7 +1,10 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from autoslug import AutoSlugField
+
+from .tasks import check_published_posts
 
 # Create your models here.
 User = get_user_model()
@@ -36,7 +39,9 @@ class Post(models.Model):
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     category = models.ManyToManyField(Category, related_name="posts")
-    thumbnail = models.ImageField(verbose_name="Thumbnail")
+    thumbnail = models.ImageField(
+        default="no-image.jpg", null=True, verbose_name="Thumbnail"
+    )
     published = models.DateTimeField(default=timezone.now(), verbose_name="Published")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated")
@@ -46,6 +51,10 @@ class Post(models.Model):
 
     class Meta:
         ordering = ("-published",)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        check_published_posts.delay()
 
     def __str__(self) -> str:
         return self.title
