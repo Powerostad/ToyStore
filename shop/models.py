@@ -11,8 +11,6 @@ class ShopCategory(models.Model):
     slug = AutoSlugField(
         max_length=250,
         populate_from="name",
-        editable=True,
-        always_update=True,
         null=True,
         blank=True,
         default=None,
@@ -30,16 +28,21 @@ class Price(models.Model):
         ordering = ("-created",)
 
     def __str__(self):
-        return self.price
+        return str(self.price)
 
 
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name="product_name")
     description = models.TextField(verbose_name="description")
-    price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name="product")
+    price = models.ManyToManyField(Price, related_name="product")
+
+    @property
+    def current_price(self):
+        return self.price.first()
+
     category = models.ManyToManyField(ShopCategory, related_name="products")
     thumbnail = models.ImageField(
-        default="no-image.jpg", null=True, verbose_name="product_thumbnail"
+        default="no-image.jpg", null=True, blank=True, verbose_name="product_thumbnail"
     )
     stock = models.IntegerField()
     available = models.BooleanField(default=True)
@@ -54,8 +57,8 @@ class ShopGallery(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="shop_gallery"
     )
-    image = models.ImageField(null=True)
-    video = models.FileField(null=True)
+    image = models.ImageField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True)
 
     def __str__(self):
         return f"Gallery of {self.product.pk}.{self.product.name}"

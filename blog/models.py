@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
+
+# from django.utils import timezone
 from autoslug import AutoSlugField
 
-from .tasks import check_published_posts
+# from .tasks import check_published_posts
 
 # Create your models here.
 User = get_user_model()
@@ -33,7 +34,7 @@ class Post(models.Model):
     slug = AutoSlugField(
         max_length=250,
         populate_from="title",
-        unique_for_date="published",
+        unique=True,
         null=True,
         blank=True,
         default=None,
@@ -41,9 +42,9 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     category = models.ManyToManyField(Category, related_name="posts")
     thumbnail = models.ImageField(
-        default="no-image.jpg", null=True, verbose_name="Thumbnail"
+        default="no-image.jpg", null=True, blank=True, verbose_name="Thumbnail"
     )
-    published = models.DateTimeField(default=timezone.now(), verbose_name="Published")
+    # published = models.DateTimeField(default=timezone.now(), verbose_name="Published")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated")
     status = models.CharField(
@@ -51,11 +52,11 @@ class Post(models.Model):
     )
 
     class Meta:
-        ordering = ("-published",)
+        ordering = ("-created_at",)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        check_published_posts.delay()
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     check_published_posts.delay()
 
     def __str__(self):
         return self.title
@@ -63,8 +64,8 @@ class Post(models.Model):
 
 class Gallery(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="gallery")
-    image = models.ImageField(null=True)
-    video = models.FileField(null=True)
+    image = models.ImageField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True)
 
     def __str__(self):
         return f"Gallery of {self.post.pk}.{self.post.title}"
