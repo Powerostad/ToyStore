@@ -26,3 +26,6 @@ class CartItem(models.Model):
     total_price = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="Total_price"
     )
+
+    def __str__(self) -> str:
+        return f"{self.quantity} x {self.product.name}"
