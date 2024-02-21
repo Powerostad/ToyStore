@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -24,8 +25,17 @@ class CartItem(models.Model):
     )
     quantity = models.IntegerField(default=1, verbose_name="Quantity")
     total_price = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name="Total_price"
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Total_price",
+        null=True,
+        blank=True,
     )
 
     def __str__(self) -> str:
         return f"{self.quantity} x {self.product.name}"
+
+    def save(self, *args, **kwargs):
+        if self.total_price:
+            self.total_price = self.quantity * self.product.price
+        return super().save(*args, **kwargs)
