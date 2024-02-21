@@ -38,7 +38,7 @@ class Product(models.Model):
 
     @property
     def current_price(self):
-        return self.price.first()
+        return self.price.values_list("price", flat=True).first()
 
     category = models.ManyToManyField(ShopCategory, related_name="products")
     thumbnail = models.ImageField(

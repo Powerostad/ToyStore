@@ -36,6 +36,6 @@ class CartItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
 
     def save(self, *args, **kwargs):
-        if self.total_price:
-            self.total_price = self.quantity * self.product.price
+        if self.pk or not self.total_price:
+            self.total_price = self.quantity * float(self.product.current_price)
         return super().save(*args, **kwargs)

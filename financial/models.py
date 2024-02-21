@@ -9,14 +9,15 @@ User = get_user_model()
 
 class Payment(models.Model):
     PAYMENT_CHOICE = (
-        ("o", "Online"),
-        ("i", "In person"),
+        ("a", "Accept"),
+        ("r", "Reject"),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    payment_method = models.CharField(max_length=1, choices=PAYMENT_CHOICE, default="o")
-    paid_at = models.DateTimeField(auto_now_add=True)
+    accept = models.CharField(max_length=1, choices=PAYMENT_CHOICE, default="A")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if not self.amount:
@@ -24,7 +25,7 @@ class Payment(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.username}.{self.amount}.{self.paid_at}"
+        return f"{self.user.username} . {self.amount} . {self.updated_at}"
 
     class Meta:
-        ordering = ("-paid_at",)
+        ordering = ("-updated_at",)
