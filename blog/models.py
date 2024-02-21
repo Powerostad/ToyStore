@@ -1,4 +1,3 @@
-from typing import Iterable
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -15,12 +14,13 @@ class Category(models.Model):
     slug = AutoSlugField(
         max_length=250,
         populate_from="name",
-        editable=True,
-        always_update=True,
+        null=True,
+        blank=True,
+        default=None,
     )
 
-    def __str__(self) -> str:
-        return self.name.title
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
@@ -33,9 +33,10 @@ class Post(models.Model):
     slug = AutoSlugField(
         max_length=250,
         populate_from="title",
-        editable=True,
-        always_update=True,
         unique_for_date="published",
+        null=True,
+        blank=True,
+        default=None,
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     category = models.ManyToManyField(Category, related_name="posts")
@@ -56,7 +57,7 @@ class Post(models.Model):
         super().save(*args, **kwargs)
         check_published_posts.delay()
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.title
 
 
@@ -65,7 +66,7 @@ class Gallery(models.Model):
     image = models.ImageField(null=True)
     video = models.FileField(null=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"Gallery of {self.post.pk}.{self.post.title}"
 
 
@@ -76,7 +77,7 @@ class Comment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
+    def __str__(self):
         if len(self.content) > 100:
             return self.content[:100]
         return self.content

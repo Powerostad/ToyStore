@@ -23,7 +23,7 @@ class Payment(models.Model):
             self.amount = sum(item.total_price for item in self.cart.cart_item.all())
         return super().save(*args, **kwargs)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"{self.user.username}.{self.amount}.{self.paid_at}"
 
     class Meta:
