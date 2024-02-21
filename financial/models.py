@@ -12,7 +12,6 @@ class Payment(models.Model):
         ("a", "Accept"),
         ("r", "Reject"),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     accept = models.CharField(max_length=1, choices=PAYMENT_CHOICE, default="A")
@@ -22,10 +21,12 @@ class Payment(models.Model):
     def save(self, *args, **kwargs):
         if not self.amount:
             self.amount = sum(item.total_price for item in self.cart.cart_item.all())
+        if not self.amount:
+            self.user = self.cart.user
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.username} . {self.amount} . {self.updated_at}"
+        return f"{self.cart.user.username} . {self.amount} . {self.updated_at}"
 
     class Meta:
         ordering = ("-updated_at",)
