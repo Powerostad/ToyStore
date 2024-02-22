@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Trusted Apps
     "celery",
+    "rest_framework",
+    "django_filters",
+    "rest_framework_simplejwt",
     # Apps
     "blog",
     "shop",
@@ -132,3 +135,14 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 # set the celery timezone
 CELERY_TIMEZONE = "UTC"
+
+REST_FRAMEWORK = {
+    "DEFAULLT_AUTHENTICATION_CLASSES": (
+        (
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        )
+        if DEBUG
+        else ("rest_framework_simplejwt.authentication.JWTAuthentication",)
+    ),
+}
