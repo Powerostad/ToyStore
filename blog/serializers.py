@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
             "body",
             "slug",
             "author",
-            "categoty",
+            "category",
             "thumbnail",
             "created_at",
             "updated_at",

@@ -15,6 +15,7 @@ class Category(models.Model):
     slug = AutoSlugField(
         max_length=250,
         populate_from="name",
+        unique=True,
         null=True,
         blank=True,
         default=None,
