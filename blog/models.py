@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # from django.utils import timezone
 from autoslug import AutoSlugField
@@ -65,8 +66,8 @@ class Post(models.Model):
 
 class Gallery(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="gallery")
-    image = models.ImageField(null=True, blank=True)
-    video = models.FileField(null=True, blank=True)
+    media = RichTextUploadingField("image_or_video", null=True)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Gallery of {self.post.pk}.{self.post.title}"

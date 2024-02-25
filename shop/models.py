@@ -1,6 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
+from ckeditor_uploader.fields import RichTextUploadingField
 
 User = get_user_model()
 
@@ -34,6 +35,14 @@ class Price(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name="product_name")
     description = models.TextField(verbose_name="description")
+    slug = AutoSlugField(
+        max_length=250,
+        populate_from="name",
+        unique_for_date="created_at",
+        null=True,
+        blank=True,
+        default=None,
+    )
     price = models.ManyToManyField(Price, related_name="product")
 
     @property
@@ -57,8 +66,8 @@ class ShopGallery(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="shop_gallery"
     )
-    image = models.ImageField(null=True, blank=True)
-    video = models.FileField(null=True, blank=True)
+    media = RichTextUploadingField("image_or_video", null=True)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Gallery of {self.product.pk}.{self.product.name}"
