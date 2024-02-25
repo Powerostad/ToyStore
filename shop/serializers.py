@@ -21,6 +21,9 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    price = serializers.SlugRelatedField("price", many=True, read_only=True)
+    category = serializers.SlugRelatedField("name", many=True, read_only=True)
+
     class Meta:
         model = Product
         fields = (
@@ -30,7 +33,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "category",
             "thumbnail",
             "stock",
-            "available",
             "created_at",
             "updated_at",
         )
@@ -47,6 +49,9 @@ class ShopGallerySerializer(serializers.ModelSerializer):
 
 
 class ShopCommentSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField("username", read_only=True)
+    product = serializers.SlugRelatedField("name", read_only=True)
+
     class Meta:
         model = ShopComment
         fields = (
@@ -56,3 +61,6 @@ class ShopCommentSerializer(serializers.ModelSerializer):
             "created_on",
             "active",
         )
+        extra_kwargs = {
+            "active": {"read_only": True},
+        }

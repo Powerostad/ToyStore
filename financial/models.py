@@ -8,13 +8,9 @@ User = get_user_model()
 
 
 class Payment(models.Model):
-    PAYMENT_CHOICE = (
-        ("a", "Accept"),
-        ("r", "Reject"),
-    )
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    accept = models.CharField(max_length=1, choices=PAYMENT_CHOICE, default="A")
+    is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
