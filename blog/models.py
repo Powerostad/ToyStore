@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from ckeditor_uploader.fields import RichTextUploadingField
+from ckeditor.fields import RichTextField
 
 # from django.utils import timezone
 from autoslug import AutoSlugField
@@ -76,7 +77,7 @@ class Gallery(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
-    content = models.TextField()
+    content = RichTextField()
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 

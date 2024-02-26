@@ -2,6 +2,7 @@ from django.db import models
 from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
 from ckeditor_uploader.fields import RichTextUploadingField
+from ckeditor.fields import RichTextField
 
 User = get_user_model()
 
@@ -80,7 +81,7 @@ class ShopComment(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="product_comments"
     )
-    content = models.TextField()
+    content = RichTextField()
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
