@@ -28,11 +28,11 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    STATUS_CHOCIE = (
+    STATUS_CHOICE = (
         ("D", "Draft"),
         ("P", "Published"),
     )
-    title = models.CharField(max_length=100, verbose_name="Title")
+    title = RichTextField(verbose_name="Title")
     body = models.TextField(verbose_name="Body")
     slug = AutoSlugField(
         max_length=250,
@@ -51,7 +51,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated")
     status = models.CharField(
-        choices=STATUS_CHOCIE, max_length=1, verbose_name="Status"
+        choices=STATUS_CHOICE, max_length=1, verbose_name="Status"
     )
 
     class Meta:
