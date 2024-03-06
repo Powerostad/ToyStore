@@ -28,10 +28,10 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    STATUS_CHOCIE = [
+    STATUS_CHOCIE = (
         ("D", "Draft"),
         ("P", "Published"),
-    ]
+    )
     title = models.CharField(max_length=100, verbose_name="Title")
     body = models.TextField(verbose_name="Body")
     slug = AutoSlugField(
